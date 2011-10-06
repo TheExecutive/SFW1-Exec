@@ -27,4 +27,84 @@
 	exec("li").addClass("testing");
 	
 	
+//------move this code into my project
+(function(){
+	
+	var validationSet = {
+		
+		email: {
+			
+			test: function(elem) {
+				var pattern = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+				return pattern.test(elem.value);
+			},
+			message: "Invalid email address."
+			
+		},
+		phone: {
+			
+			test: function(elem) {
+				var pattern = /^[01]?[- .]?\(?[2-9]\d{2}\)?[- .]?\d{3}[- .]?\d{4}$/;
+			},
+			message: "Invalid phone."
+			
+		},
+		text: {
+			
+			test: function(elem) {
+				var pattern = /^[a-zA-Z]+$/;
+				//Validating just text
+			},
+			message: "Invalid text."
+			
+		},
+		password: {
+			
+			test: function(elem) {
+				var pattern = /^(?=.*\d)(?=.*[a-zA-Z])(?!.*[\W_\x7B-\xFF]).{6,15}$/;
+				//Requires 6-20 characters including at least 1 upper or lower alpha, and 1 digit.
+			},
+			message: "Invalid password."
+			
+		},
+		website: {
+			
+			test: function(elem) {
+				var pattern = /(((ht|f)tp(s?):\/\/)|(www\.[^ \[\]\(\)\n\r\t]+)|(([012]?[0-9]{1,2}\.){3}[012]?[0-9]{1,2})\/)([^ \[\]\(\),;&quot;'&lt;&gt;\n\r\t]+)([^\. \[\]\(\),;&quot;'&lt;&gt;\n\r\t])|(([012]?[0-9]{1,2}\.){3}[012]?[0-9]{1,2})/;
+				//URL validator
+			},
+			message: "Invalid website."
+			
+		} // end of object
+		
+	};
+	
+	var regFields = exec("#myform input");
+	
+	regFields.each(function () {
+	  this.onkeyup = function() {
+	  	//the word this will point to each item
+	  	//we are now going to loop through the validation set and if it's a match, we test
+	  	
+	  	for(var key in validationSet){
+	  		if( exec(this).hasClass(key) ){
+	  			//if the item we're testing for has the class (key) 
+	  			//then run the test method inside this..
+	  			if ( validationSet[key].test(this) ){
+	  				//...and check if true or false. if it's true...
+	  				console.log("success");
+	  				
+	  			}else{
+	  				console.log("no match");
+	  			};
+	  		};
+	  	};
+	  	
+	  };
+	  
+	})
+	
+})();	
+	
+	
 })();
