@@ -1,4 +1,6 @@
-// js goes her/
+/* JS Library - "Exec", SFW1
+ * Author: Troy Grant
+ */
 
 var exec = function(selector) {
 	return new exec.prototype.init(selector);
@@ -26,15 +28,21 @@ exec.prototype = {
 	each: function(fn) {
 		for (var i=0, j=this.elements.length; i < j; i++) {
 		  fn.call(this.elements[i]);
+		  //run whatever the function that is passed in
+		  //for every element that is on that variable
 		};
 		return this; //returning the object that exec made,
-		//all functions in exec will return this. In this case, it's formfields
+		//all functions in exec will return this.
 	},
 	
 	css: function(props) {
+		//this function takes in an object
 		for(var prop in props){
+			//for each key in the object
 			this.each(function(){
 				this.style[prop] = props[prop];
+				//this.style[prop] is the first object tag
+				//equals props[prop] is the second tag
 			});
 		};
 	},
@@ -50,8 +58,8 @@ exec.prototype = {
 				// we need a boolean here
 				hasIt = true;
 				//we cant say return false here because it would return
-				//false as a result of the hasClass function, not
-				//part of the this.each function, which is what we want
+				//false as a result of the this.each function, not
+				//part of the hasClass function, which is what we want
 			};
 		});	
 		return hasIt;
