@@ -109,7 +109,8 @@ exec.ajax = function(options) {
 		type: (options.type || "GET"),
 		timeout: (options.timeout || 8000),
 		success: (options.success || function() {}),
-		error: (options.error || function() {}) //end of object
+		error: (options.error || function() {}), 
+		data: options.data || {} //end of object
 	};
 	
 	setTimeout(function(){
@@ -142,11 +143,21 @@ exec.ajax = function(options) {
 		//ct means content type
 	};
 	
-	var serialize = function() {};
+	var serialize = function() {
+		var ser = [];
+		
+		for(var key in options.data){
+			ser.push( key + "=" + encodeURIComponent(options.data[key]) );
+			//variable = content (content encoded for URL)
+		};
+		
+		//requests begin with a ? mark and are seperated by an ampersand
+		return "?" + ser.join("&");
+	};
 	
 	var xhr = new XMLHttpRequest();
 	
-	xhr.open(options.type, options.url, true); //true or false determines if it's asynchronus.
+	xhr.open(options.type, options.url + serialize(), true); //true or false determines if it's asynchronus.
 	//it will always be true
 	
 	xhr.onreadystatechange = function() {
