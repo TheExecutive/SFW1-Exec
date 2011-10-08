@@ -86,5 +86,98 @@ exec.prototype = {
 	} //end of object
 };
 
+// ------------------------------LIBRARY UTILITY FUNCTIONS (non-DOM)------------------------
+
+/*
+ * exec.ajax({
+ * 	url: "xhr/file.php",
+ * 	type: "GET",
+ * 	success: function(response){},
+ * 	error: function(response){},
+ * 	timeout: 8000       //(8 seconds)
+ * 
+ * });
+ */
+exec.ajax = function(options) {
+	
+	//taking the options passed in and redefining it into a new object
+	// for creating defaults
+	options = {
+		url: (options.url || ""),
+			//this is a shorthand if. If options.url doesn't exist, meaning it's false,
+			//then make it an empty string
+		type: (options.type || "GET"),
+		timeout: (options.timeout || 8000),
+		success: (options.success || function() {}),
+		error: (options.error || function() {}) //end of object
+	};
+	
+	setTimeout(function(){
+		if(xhr){
+			xhr.abort(); // stop the request if it's still not finished by now
+		}
+		
+	}, options.timeout); //runs this function once after the time that is in timeout (8 seconds)
+	
+	var checkHttp = function() {
+		try{
+			
+			return !xhr.status && location.protocol === "file:" ||
+					(xhr.status >= 200 && xhr.status <300 ) ||
+					xhr.status === 304 ||
+					navigator.userAgent.indexOf("Safari") >= 0 && xhr.status === "undefined"
+					//end of return. Safari has a bug where it returns a string "undefined"
+					//instead of saying undefined
+			;
+			
+		}catch(err){};
+		
+		return false; //if the whole thing fails, just return false
+	};
+	
+	var parseData = function() {
+		var ct = xhr.getResponseHeader("content-type");
+		var isxml = ct && ct.indexOF("xml") >= 0;
+		return isxml ? xhr.responseXML : xhr.responseText;	
+		//ct means content type
+	};
+	
+	var serialize = function() {};
+	
+	var xhr = new XMLHttpRequest();
+	
+	xhr.open(options.type, options.url, true); //true or false determines if it's asynchronus.
+	//it will always be true
+	
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState === 4){
+			//4 means that the call is 100% done. We don't care about any other states but 4.
+			
+			var valid = checkHttp(); //this function will return true or false based on whether
+			//or not the request was successful or failed.
+			
+			if(valid){
+				//success
+				var response = parseData();
+				options.success( response );
+			}else{
+				//fail
+				options.error(xhr);
+			};
+			
+			xhr = undefined; //at this point we're done with it so there's no need to have
+			//it still be defined.
+		};
+		
+	};
+	
+	xhr.send(null); //this null is get around a firefox bug
+};
+
+
+//------------------------------------------------------------------------------------------
+
 exec.prototype.init.prototype = exec.prototype;
 //this is what allows the "factory" technique to work
+
+//end of library
