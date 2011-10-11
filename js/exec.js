@@ -45,6 +45,7 @@ exec.prototype = {
 				//equals props[prop] is the second tag
 			});
 		};
+		return this;
 	},
 	
 	hasClass: function(name) {
@@ -73,6 +74,7 @@ exec.prototype = {
 		  		//adding a space because class names are seperated by spaces in HTML
 		  };
 		});
+		return this;
 	},
 	
 	removeClass: function(name) {
@@ -83,6 +85,52 @@ exec.prototype = {
 		  //pattern and replace it with a space. if there was no space, replace it with
 		  //nothing. It's using the RegExp.
 		});
+		return this;
+	}, 
+	
+	getStyle: function(prop) {
+		//can't do this.each because that's meant for setters, and this is a getter
+		var elem = this.elements[0];
+		
+		if( elem.style[prop] ){
+			//this tests if there is an inline style set by javascript
+			return elem.style[prop];
+		}else if ( elem.currentStyle ) {
+			//this tests for IE, because this is the way you write it in IE
+			return elem.currentStyle[prop];
+		}else{
+			//if it's not set by javascript or the user isn't using IE, then do this
+			prop = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+			//reg exp is saying look for any capital letter, put a dash in front of it
+			//and make the whole thing lowercase. so instead of backgroundColor, it would
+			//say background-color. It's a camel case undoer.
+			return document.defaultView.getComputedStyle(elem, "").getPropertyValue(prop); 
+			//you need the empty string in there
+		};
+	},
+	
+	hide: function() {
+		this.each(function(){
+			this.style.display = "none";
+		});
+		return this;
+	},
+	
+	show: function() {
+		this.each(function(){
+			this.style.display = "";
+		});
+		return this;
+	},
+	
+	on: function(evt, handler) {
+		this.each(function(){
+			//we can't say onclick because we have a string instead
+			this[ "on" + evt ] = handler;
+			//if we pass the string click, we get onlick.
+			//this is a shortcut for binding events.
+		});
+		return this;
 	} //end of object
 };
 

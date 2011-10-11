@@ -30,6 +30,28 @@
 //------move this code into my project
 (function(){
 	
+	var header = exec(".dssheader");
+	
+	header.css({
+		padding: "20px", 
+		border: "2px solid black"
+	});
+	
+	//var color = exec(".dssheader").elements[0].style.color; //pulling the font color out
+	//the dom style can only access attributes that javascript itself set.
+	//therefore, this, as written, will only get me an empty string.
+	
+	var height = header.getStyle("height");
+	//don't ever try to pull out colors, it's buggy and why would you ever need to?
+	
+	console.log(height);
+	
+	header.hide();
+	
+	setTimeout(function(){
+		header.show();
+	}, 3000);
+	
 	var validationSet = {
 		
 		email: {
