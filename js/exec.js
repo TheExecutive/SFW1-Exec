@@ -138,7 +138,7 @@ exec.ajax = function(options) {
 	
 	var parseData = function() {
 		var ct = xhr.getResponseHeader("content-type");
-		var isxml = ct && ct.indexOF("xml") >= 0;
+		var isxml = ct && ct.indexOf("xml") >= 0;
 		return isxml ? xhr.responseXML : xhr.responseText;	
 		//ct means content type
 	};
