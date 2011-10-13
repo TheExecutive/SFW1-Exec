@@ -131,7 +131,59 @@ exec.prototype = {
 			//this is a shortcut for binding events.
 		});
 		return this;
-	} //end of object
+	},
+	
+	animate: function(options) {
+		options = {
+			duration: options.duration || 500, //default is half a second
+			props: options.props || {},
+			easing: options.easing || "easeOutCirc",
+			done: options.done || function(){} //end of object
+		};
+		
+		this.each(function(){
+			
+			var that = this; // saving the context of a different function
+			
+			var startVals = {};
+			for(var prop in options.props){
+				startVals[prop] = parseFloat( exec(this).getStyle(prop) || 0 ); 
+				//for each key of the props object, we're gonna make a key of the same name in startVals
+				//and give them the values passed in, parseFloat'd as numbers
+				//with an or statement that said, if those vals doesn't exist, start the animation at 0
+			}
+			
+			var time = 0;
+			var anim = setInterval(function(){
+				time += 30;
+				
+				for(var prop in options.props){
+					var newVal = Math[options.easing](time, startVals[prop], options.props[prop] - startVals[prop], options.duration ,2);
+					that.style[prop] = newVal + "px";
+					
+					/*
+					 * 1st: start time
+					 * 3rd: Change, take the end value and subtract it from the start value
+					 * 4rd: Curve set at 2
+					 */
+				};
+				
+				if(time >= options.duration){
+					clearInterval(anim);
+					for(var prop in options.props){
+						that.style[prop] = options.props[prop] + "px";
+						//this is to fix a math quirk, at the end of the animation it will be a little off
+						//so we will set it to be the exact point at the end
+					};
+					options.done();
+				};
+				
+			}, 30); //about 30 frames per second
+		});
+		
+		return this;
+		
+	}//end of object
 };
 
 // ------------------------------LIBRARY UTILITY FUNCTIONS (non-DOM)------------------------
